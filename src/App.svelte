@@ -1,13 +1,15 @@
 <script lang="ts">
-  import ProtectedLayout from "./lib/layouts/ProtectedLayout.svelte";
+  import { Router, Route } from "svelte-routing";
+
+  import MasterLayout from "./lib/layouts/MasterLayout.svelte";
   import ProjectPage from "./lib/pages/ProjectPage.svelte";
+  import SettingPage from "./lib/pages/SettingPage.svelte";
 
 </script>
 
-<ProtectedLayout>
-  <ProjectPage />
-</ProtectedLayout>
-
-<style>
-  
-</style>
+<MasterLayout>
+  <Router>
+    <Route path="/" component={ProjectPage} />
+    <Route path="/settings" component={SettingPage} />
+  </Router>
+</MasterLayout>
