@@ -1,22 +1,5 @@
 <script lang="ts">
-    let projects = [
-        {
-            id: 1,
-            title: "Project 1",
-        },
-        {
-            id: 2,
-            title: "Project 2",
-        },
-        {
-            id: 3,
-            title: "Project 3",
-        },
-        {
-            id: 4,
-            title: "Project 4",
-        },
-    ];
+    import { projectStore } from "../../database/projectStore";
 
 </script>
 
@@ -24,7 +7,7 @@
 <h1>Your Projects</h1>
 
 <div class="project-list">
-    {#each projects as project}
+    {#each $projectStore as project (project.id)}
         <div class="project-container">
             <a href="/projects/{project.id}">{project.title}</a>
         </div>
