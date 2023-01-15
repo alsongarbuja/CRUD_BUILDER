@@ -4,7 +4,7 @@
   let nav = [
     {
       name: "Projects",
-      href: "/projects",
+      href: "/",
       icon: "📁",
       active: true,
     },
@@ -29,7 +29,7 @@
 <style>
     nav {
         padding: 0;
-        border-right: rgba(128, 128, 128, 0.089) 1px solid;
+        border-right: #80808017 1px solid;
         height: 100%;
         background-color: #fff;
     }
