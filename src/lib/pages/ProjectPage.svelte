@@ -23,6 +23,7 @@
     const createProject = () => {
         projectData.id = new Date().getTime().toString();        
         projectStore.update(pd => [projectData, ...pd]);
+        localStorage.setItem('projects', JSON.stringify($projectStore));
         isAdding = false;
     };
 </script>
