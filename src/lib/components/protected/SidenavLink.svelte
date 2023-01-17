@@ -3,12 +3,15 @@
         name: string;
         href: string;
         icon: string;
-        active: boolean;
     };
+
+    import { onMount } from 'svelte';
+    let url = `/`;
+    onMount(() => url += window.location.href.split('/')[window.location.href.split('/').length - 1]);
 </script>
 
 <a href={nav.href}>
-    <li class="nav-flex" class:active={nav.active}>
+    <li class="nav-flex" class:active={nav.href===url}>
         <span class="nav-icon">{nav.icon}</span>
         <span class="nav-text">{nav.name}</span>
     </li>

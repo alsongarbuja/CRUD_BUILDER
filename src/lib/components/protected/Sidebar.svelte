@@ -5,14 +5,12 @@
     {
       name: "Projects",
       href: "/",
-      icon: "📁",
-      active: true,
+      icon: "📁"
     },
     {
       name: "Settings",
       href: "/settings",
-      icon: "⚙️",
-      active: false,
+      icon: "⚙️"
     },
   ];
 
