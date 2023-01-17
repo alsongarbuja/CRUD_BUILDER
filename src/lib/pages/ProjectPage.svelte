@@ -1,6 +1,7 @@
 <script lang="ts">
     import { projectStore } from "../../database/projectStore";
     import type { Project } from "../../types/state";
+    import Input from "../components/forms/Input.svelte";
     
     let isAdding = false;
     let projectData: Project = {
@@ -20,8 +21,8 @@
     };
 
     const createProject = () => {
-        projectData.id = new Date().getTime().toString();
-        $projectStore.push(projectData);
+        projectData.id = new Date().getTime().toString();        
+        projectStore.update(pd => [projectData, ...pd]);
         isAdding = false;
     };
 </script>
@@ -41,16 +42,18 @@
 </div>
 
 {#if isAdding}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div class="pop-bg" on:click={changeAddingState} />
     <div class="create-pop">
         <h2>Create a new project</h2>
         <form on:submit|preventDefault={createProject}>
-            <input type="text" name="title" bind:value={projectData.title} />
-            <input type="text" name="description" bind:value={projectData.description} />
-            <input type="text" name="baseUrl" bind:value={projectData.baseUrl} />
-            <input type="text" name="createEndPoint" bind:value={projectData.createEndPoint} />
-            <input type="text" name="readEndPoint" bind:value={projectData.readEndPoint} />
-            <input type="text" name="updateEndPoint" bind:value={projectData.updateEndPoint} />
-            <input type="text" name="deleteEndPoint" bind:value={projectData.deleteEndPoint} />
+            <Input name="title" isRequired label="Project Title" bind:value={projectData.title} />
+            <Input name="description" label="Project Description" bind:value={projectData.description} />
+            <Input name="baseUrl" isRequired label="Project BaseUrl" bind:value={projectData.baseUrl} />
+            <Input name="createEndPoint" label="Project Create End Point" bind:value={projectData.createEndPoint} />
+            <Input name="updateEndPoint" isRequired label="Project Update End Point" bind:value={projectData.updateEndPoint} />
+            <Input name="readEndPoint" label="Project Read End Point" bind:value={projectData.readEndPoint} />
+            <Input name="deleteEndPoint" isRequired label="Project Delete End Point" bind:value={projectData.deleteEndPoint} />
             <button type="submit">Create</button>
         </form>
     </div>
@@ -78,5 +81,23 @@
         color: #535bf2;
         background-color: transparent;
         border: none;
+    }
+    :global(.pop-bg) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #00000080;
+    }
+    .create-pop {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50vw;
+        background-color: #fff;
+        padding: 2em;
+        border-radius: 1em;
     }
 </style>
