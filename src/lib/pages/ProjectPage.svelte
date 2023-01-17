@@ -3,7 +3,8 @@
     import type { Project } from "../../types/state";
     import Input from "../components/forms/Input.svelte";
     
-    let isAdding = false;
+    let isAdding: boolean = false;
+    let isEditing: boolean = false;
     let projectData: Project = {
         id: "",
         title: "",
@@ -16,16 +17,41 @@
         deleteEndPoint: "",
     };
 
+    const closePop = () => {
+        isAdding = false;
+        isEditing = false;
+    }
     const changeAddingState = () => {
         isAdding = !isAdding;
     };
 
     const createProject = () => {
-        projectData.id = new Date().getTime().toString();        
+        projectData.id = new Date().getTime().toString();
+
+        if($projectStore.length === 0) projectData.isSelected = true;
+        else projectData.isSelected = false;
+        
         projectStore.update(pd => [projectData, ...pd]);
         localStorage.setItem('projects', JSON.stringify($projectStore));
         isAdding = false;
     };
+
+    const updateProject = () => {
+        projectStore.update(pd => pd.map(p => p.id === projectData.id ? projectData : p));
+        localStorage.setItem('projects', JSON.stringify($projectStore));
+        isEditing = false;
+    }
+
+    const deleteProject = (id: string) => {
+        projectStore.update(pd => pd.filter(p => p.id !== id));
+        localStorage.setItem('projects', JSON.stringify($projectStore));
+    };
+
+    const editProject = (id: string) => {
+        projectData = $projectStore.find(p => p.id === id);
+        isEditing = true;
+    };
+
 </script>
 
 
@@ -34,7 +60,15 @@
 <div class="project-list">
     {#each $projectStore as project (project.id)}
         <div class="project-container">
-            <a href="/projects/{project.id}">{project.title}</a>
+            <div>
+                <button on:click={()=>editProject(project.id)}>Edit</button>
+                <button on:click={()=>deleteProject(project.id)}>Delete</button>
+            </div>
+            <h3>{project.title}</h3>
+            <p>{project.description}</p>
+            <span class:selected={project.isSelected} class="status">
+                selected: {project.isSelected}
+            </span>
         </div>
     {/each}
     <div class="project-container">
@@ -42,12 +76,18 @@
     </div>
 </div>
 
-{#if isAdding}
+{#if isAdding || isEditing}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class="pop-bg" on:click={changeAddingState} />
+    <div class="pop-bg" on:click={closePop} />
     <div class="create-pop">
-        <h2>Create a new project</h2>
-        <form on:submit|preventDefault={createProject}>
+        <h2>
+            {#if isAdding}
+                Create Project
+            {:else if isEditing}
+                Edit Project
+            {/if}
+        </h2>
+        <form on:submit|preventDefault={isAdding?createProject:updateProject}>
             <Input name="title" isRequired label="Project Title" bind:value={projectData.title} />
             <Input name="description" label="Project Description" bind:value={projectData.description} />
             <Input name="baseUrl" isRequired label="Project BaseUrl" bind:value={projectData.baseUrl} />
@@ -55,7 +95,13 @@
             <Input name="updateEndPoint" isRequired label="Project Update End Point" bind:value={projectData.updateEndPoint} />
             <Input name="readEndPoint" label="Project Read End Point" bind:value={projectData.readEndPoint} />
             <Input name="deleteEndPoint" isRequired label="Project Delete End Point" bind:value={projectData.deleteEndPoint} />
-            <button type="submit">Create</button>
+            <button type="submit">
+                {#if isAdding}
+                    Create
+                {:else if isEditing}
+                    Update
+                {/if}
+            </button>
         </form>
     </div>
 {/if}
@@ -73,9 +119,10 @@
         background-color: #fff;
         box-shadow: 2px 3px 15px #535bf21f;
         display: flex;
+        flex-direction: column;
         place-items: center;
         place-content: center;
-        cursor: pointer;
+        text-align: center;
     }
     .new-icon {
         font-size: 5em;
@@ -100,5 +147,11 @@
         background-color: #fff;
         padding: 2em;
         border-radius: 1em;
+    }
+    .status {
+        color: red;
+    }
+    .selected {
+        color: green;
     }
 </style>
