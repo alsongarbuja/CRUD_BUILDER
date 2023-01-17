@@ -19,7 +19,7 @@
         display: grid;
         grid-template-columns: 1fr 4fr;
         height: calc(100vh - 70px);
-        background-color: #535bf21f;
+        background-color: #747af56f;
     }
     .content {
         padding: 1.5em;
