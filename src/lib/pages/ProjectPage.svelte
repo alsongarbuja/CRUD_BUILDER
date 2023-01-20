@@ -15,7 +15,10 @@
         readEndPoint: "",
         updateEndPoint: "",
         deleteEndPoint: "",
+        model: {},
     };
+    let keyValues = [];
+    let numberOfKeyValues = 1;
 
     const closePop = () => {
         isAdding = false;
@@ -24,6 +27,20 @@
     const changeAddingState = () => {
         isAdding = !isAdding;
     };
+
+    const handleKey = (e: Event) => {
+        const target = (e.target as HTMLInputElement)
+        const { value } = target;
+
+        keyValues.push({ [value]: '' });
+    }
+
+    const handleValue = (e: Event) => {
+        const target = (e.target as HTMLInputElement)
+        const { value } = target;
+
+        keyValues.push({ [value]: '' });
+    }
 
     const createProject = () => {
         projectData.id = new Date().getTime().toString();
@@ -95,6 +112,23 @@
             <Input name="updateEndPoint" isRequired label="Project Update End Point" bind:value={projectData.updateEndPoint} />
             <Input name="readEndPoint" label="Project Read End Point" bind:value={projectData.readEndPoint} />
             <Input name="deleteEndPoint" isRequired label="Project Delete End Point" bind:value={projectData.deleteEndPoint} />
+            {#each Array(numberOfKeyValues) as _, index (index)}
+                <div>
+                    <div>
+                        <label for="">Key:</label>
+                        <input type="text" required on:change={handleKey}>
+                    </div>
+                    <div>
+                        <label for="">Value:</label>
+                        <input name={keyValues[index]?Object.keys(keyValues[index])[0]:''} type="text" required on:change={handleValue}>
+                    </div>
+                </div>
+            {/each}
+            <button type="button" on:click={()=>numberOfKeyValues++}>Add model</button>
+            {#if numberOfKeyValues > 1}
+                <button type="button" on:click={()=>numberOfKeyValues--}>Remove model</button>
+            {/if}
+            <br/>
             <button type="submit">
                 {#if isAdding}
                     Create
@@ -144,9 +178,11 @@
         left: 50%;
         transform: translate(-50%, -50%);
         width: 50vw;
+        max-height: 80vh;
         background-color: #fff;
         padding: 2em;
         border-radius: 1em;
+        overflow-y: scroll;
     }
     .status {
         color: red;

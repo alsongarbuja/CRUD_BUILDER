@@ -8,4 +8,5 @@ export type Project = {
     readEndPoint: string;
     updateEndPoint: string;
     deleteEndPoint: string;
+    model: object;
 }
