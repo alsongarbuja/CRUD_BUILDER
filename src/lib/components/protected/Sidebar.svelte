@@ -8,6 +8,11 @@
       icon: "📁"
     },
     {
+      name: "Data",
+      href: "/data",
+      icon: "B"
+    },
+    {
       name: "Settings",
       href: "/settings",
       icon: "⚙️"
