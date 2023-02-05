@@ -28,28 +28,38 @@
         isAdding = !isAdding;
     };
 
-    const handleKey = (e: Event) => {
+    const handleKeyValue = (e: Event) => {
         const target = (e.target as HTMLInputElement)
         const { value } = target;
+        const [key, type] = value.split(':');
 
-        keyValues.push({ [value]: '' });
-    }
-
-    const handleValue = (e: Event) => {
-        const target = (e.target as HTMLInputElement)
-        const { value } = target;
-
-        keyValues.push({ [value]: '' });
+        keyValues.push({ [key]: type });
     }
 
     const createProject = () => {
         projectData.id = new Date().getTime().toString();
+        keyValues.forEach(element => {
+            projectData.model = { ...projectData.model, ...element };
+        });
 
         if($projectStore.length === 0) projectData.isSelected = true;
         else projectData.isSelected = false;
         
         projectStore.update(pd => [projectData, ...pd]);
         localStorage.setItem('projects', JSON.stringify($projectStore));
+        keyValues = [];
+        projectData = {
+            id: "",
+            title: "",
+            description: "",
+            isSelected: false,
+            baseUrl: "",
+            createEndPoint: "",
+            readEndPoint: "",
+            updateEndPoint: "",
+            deleteEndPoint: "",
+            model: {},
+        };
         isAdding = false;
     };
 
@@ -116,17 +126,13 @@
                 <div>
                     <div>
                         <label for="">Key:</label>
-                        <input type="text" required on:change={handleKey}>
-                    </div>
-                    <div>
-                        <label for="">Value:</label>
-                        <input name={keyValues[index]?Object.keys(keyValues[index])[0]:''} type="text" required on:change={handleValue}>
+                        <input type="text" placeholder="key:type" required on:change={handleKeyValue}>
                     </div>
                 </div>
             {/each}
-            <button type="button" on:click={()=>numberOfKeyValues++}>Add model</button>
+            <button type="button" on:click={()=>numberOfKeyValues++}>Add Key:Value</button>
             {#if numberOfKeyValues > 1}
-                <button type="button" on:click={()=>numberOfKeyValues--}>Remove model</button>
+                <button type="button" on:click={()=>numberOfKeyValues--}>Remove Key:Value</button>
             {/if}
             <br/>
             <button type="submit">
